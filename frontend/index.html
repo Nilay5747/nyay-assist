@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nyay Assist — Legal Advice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Base Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+body { min-height:100vh; color:#fff; line-height:1.6; overflow-x:hidden; background:#0f2027; }
+
+/* Background */
+.bg-image { position:fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-3; transition:opacity 0.8s ease-in-out; }
+.bg-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,32,39,0.5); z-index:-2; }
+
+/* Header */
+header { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); color:white; padding:18px 25px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; border-bottom-left-radius:16px; border-bottom-right-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,0.3); position:relative; z-index:3; }
+header h1 { font-size:28px; display:flex; align-items:center; gap:10px; text-shadow:0 2px 6px rgba(0,0,0,0.5); }
+nav button { margin-left:10px; padding:10px 18px; border:none; border-radius:16px; cursor:pointer; font-weight:600; background:linear-gradient(135deg,#ff416c,#ff4b2b); color:#fff; box-shadow:0 6px 20px rgba(255,75,43,0.3); transition:all 0.4s ease; }
+nav button:hover { transform:scale(1.05) translateY(-2px); box-shadow:0 10px 28px rgba(255,75,43,0.5); }
+
+/* Home Section */
+#home-section { min-height:60vh; display:flex; justify-content:center; align-items:center; text-align:center; flex-direction:column; padding:20px; }
+.home-title { font-size:3em; color:#ff416c; font-style:italic; margin-bottom:15px; text-shadow:0 2px 10px rgba(0,0,0,0.5); }
+.home-subtitle { font-size:1.5em; color:#fff; text-shadow:0 1px 6px rgba(0,0,0,0.4); max-width:700px; margin-bottom:30px; }
+#home-description { font-size:1.1em; line-height:1.6; color:#fff; max-width:800px; margin:20px auto 0 auto; }
+
+/* Container */
+.container { background-color: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border-radius:20px; padding:40px 30px; max-width:1000px; margin:20px auto 60px auto; box-shadow:0 8px 30px rgba(0,0,0,0.3); position:relative; z-index:2; }
+
+.hidden { display:none; }
+h2 { margin-bottom:20px; font-size:28px; color:#ff416c; letter-spacing:1px; text-shadow:0 2px 8px rgba(0,0,0,0.5); }
+p { margin-bottom:20px; font-size:1.1em; }
+
+/* Forms */
+input[type="email"], input[type="password"], input[type="text"] { width:100%; max-width:400px; padding:14px 16px; margin:14px 0; border-radius:16px; border:none; font-size:1em; background:rgba(255,255,255,0.1); color:#fff; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); transition: all 0.3s ease; }
+input:focus { outline:none; box-shadow:0 0 12px rgba(255,75,43,0.7); background:rgba(255,255,255,0.15); }
+
+button.action-btn { background:linear-gradient(135deg,#ff416c,#ff4b2b); color:#fff; border-radius:16px; padding:14px 28px; font-weight:600; font-size:1em; border:none; cursor:pointer; box-shadow:0 6px 20px rgba(255,75,43,0.3); transition:all 0.4s ease; }
+button.action-btn:hover { transform:scale(1.05) translateY(-2px); box-shadow:0 10px 28px rgba(255,75,43,0.5); }
+
+/* Cards */
+.card { background: rgba(255,255,255,0.05); border-radius:20px; padding:24px; margin:24px 0; box-shadow:0 8px 25px rgba(0,0,0,0.3); backdrop-filter:blur(10px); }
+.card h3 { font-size:1.3em; display:flex; align-items:center; gap:12px; margin-bottom:12px; color:#ff416c; }
+.badge { display:inline-block; background:linear-gradient(135deg,#ff4b2b,#ff416c); padding:4px 14px; border-radius:20px; font-size:0.9em; color:#fff; }
+
+#user-info { margin:20px 0; font-weight:600; display:flex; align-items:center; gap:12px; font-size:1.1em; }
+
+/* --------------------- */
+/* Highlights Panel Fixed */
+/* --------------------- */
+#highlights-panel {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 100px;
+    width: 300px;
+    height: 450px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+    padding: 0;
+    z-index: 5;
+    flex-direction: column;
+}
+
+/* Header inside the panel */
+#highlights-panel h3 {
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 1.1em;
+    color: #fff;
+    text-align: center;
+    background: linear-gradient(135deg,#ff416c,#ff4b2b);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Scrolling list */
+#highlights-panel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 16px;
+    position: absolute;
+    top: 48px; /* below the header */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: visible;
+    animation: scroll-up 240s linear infinite;
+}
+
+#highlights-panel ul li {
+    margin-bottom: 10px;
+    line-height: 1.4em;
+    font-size: 0.95em;
+}
+
+/* Scroll animation adjusted to start below header */
+@keyframes scroll-up {
+    0% { transform: translateY(calc(100% - 48px)); } /* start below header */
+    100% { transform: translateY(-100%); }
+}
+
+@media(max-width:600px) {
+    header{flex-direction:column;gap:10px;}
+    nav button{margin:5px 0 0 0;width:100%;}
+    .container{padding:25px 20px;margin:20px 10px;}
+    .home-title{font-size:2.2em;}
+    .home-subtitle{font-size:1.2em;}
+    #home-description{font-size:1em;}
+    #highlights-panel{display:none;}
+}
+</style>
+
+</head>
+<body>
+
+<div id="bg-image" class="bg-image" style="background-image:url('assets/image10.jpg');"></div>
+<div class="bg-overlay"></div>
+
+<header>
+<h1><i class="fas fa-gavel"></i> Nyay Assist</h1>
+<nav>
+<button id="nav-home" onclick="showSection('home'); changeBg('home')"><i class="fas fa-home"></i> Home</button>
+<button id="nav-register" onclick="showSection('register')"><i class="fas fa-user-plus"></i> Register</button>
+<button id="nav-login" onclick="showSection('login')"><i class="fas fa-sign-in-alt"></i> Login</button>
+<button id="nav-legal" onclick="showSection('legal'); changeBg('legal')" class="hidden"><i class="fas fa-balance-scale"></i> Legal Advice</button>
+<button id="nav-resources" onclick="showSection('resources'); changeBg('resources')"><i class="fas fa-folder-open"></i> Resources</button>
+<button id="nav-logout" onclick="logout()" class="hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
+</nav>
+</header>
+
+<div id="home-section">
+<h1 class="home-title">"Justice Made Simple"</h1>
+<p class="home-subtitle">Your trusted legal guide, right at your fingertips.</p>
+<p id="home-description">
+Nyay Assist is your personal online legal assistant, helping you understand your rights and find accurate legal guidance quickly and safely. Register or login to start receiving expert advice tailored to your situation.
+</p>
+</div>
+
+<div class="container">
+
+<!-- REGISTER -->
+<div id="register-section" class="hidden">
+<h2>Register</h2>
+<input type="email" id="reg-email" placeholder="Email"><br>
+<input type="password" id="reg-password" placeholder="Password"><br>
+<button class="action-btn" onclick="registerUser()">Register</button>
+</div>
+
+<!-- LOGIN -->
+<div id="login-section" class="hidden">
+<h2>Login</h2>
+<input type="email" id="email" placeholder="Email"><br>
+<input type="password" id="password" placeholder="Password"><br>
+<button class="action-btn" onclick="login()">Login</button>
+</div>
+
+<!-- LEGAL -->
+<div id="legal-section" class="hidden">
+<div id="user-info"></div>
+<h2>Ask for Legal Advice</h2>
+<input type="text" id="situation" placeholder="Describe your situation"><br>
+<button class="action-btn" onclick="getLegalAdvice()">Get Advice</button>
+<div id="response" class="hidden"></div>
+
+<div style="margin-top:20px;">
+<button class="action-btn" onclick="window.open('https://lawrato.com/lawyers/kolkata','_blank')"><i class="fas fa-user-tie"></i> Find Lawyers in Kolkata</button>
+</div>
+</div>
+
+<!-- RESOURCES -->
+<div id="resources-section" class="hidden">
+<h2><i class="fas fa-folder-open"></i> Legal Resources</h2>
+
+<div class="card">
+<h3><i class="fas fa-phone"></i> Emergency Helplines</h3>
+<p>Police: 100</p>
+<p>Women Helpline: 181</p>
+<p>Cyber Crime: 1930</p>
+<p>Child Helpline: 1098</p>
+</div>
+
+<div class="card">
+<h3><i class="fas fa-book"></i> Legal Documents</h3>
+<button class="action-btn" onclick="window.open('assets/constitution_of_india.pdf','_blank')">
+Download Constitution of India
+</button>
+</div>
+
+<div class="card">
+<h3><i class="fas fa-user-tie"></i> Hire Lawyers</h3>
+<p>Find experienced lawyers to help you with your case.</p>
+<button class="action-btn" onclick="window.open('https://lawrato.com/lawyers/kolkata','_blank')">
+Hire a Lawyer in Kolkata
+</button>
+</div>
+
+<div class="card">
+  <h3><i class="fas fa-comment-dots"></i> Feedback</h3>
+  <p>Help us improve Nyay Assist by sharing your feedback.</p>
+  <button class="action-btn" onclick="window.open('https://forms.gle/hEBThhew35MLn9TN7','_blank')">
+    Give Feedback
+  </button>
+</div>
+
+</div>
+
+</div>
+
+<div id="highlights-panel">
+<h3>Constitution Highlights</h3>
+<ul id="highlights-list"></ul>
+</div>
+
+<script src="script.js"></script>
+<script>
+function changeBg(section){
+const bg=document.getElementById('bg-image');
+bg.style.opacity=0;
+setTimeout(()=>{ 
+if(section==='home') bg.style.backgroundImage="url('assets/image10.jpg')";
+else if(section==='legal') bg.style.backgroundImage="url('assets/image20.jpg')";
+else if(section==='resources') bg.style.backgroundImage="url('assets/image15.jpg')";
+bg.style.opacity=1;
+},400);
+}
+</script>
+</body>
+</html>
